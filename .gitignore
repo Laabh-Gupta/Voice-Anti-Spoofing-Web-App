@@ -1,0 +1,43 @@
+# --- Python specific ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# --- Virtual environment ---
+venv/
+env/
+.venv/
+ENV/
+*.env
+
+# --- Jupyter ---
+*.ipynb_checkpoints/
+
+# --- Model Checkpoints (keep only final .pth / .pkl) ---
+*.pth
+*.pt
+*.pkl         
+!audio_app/vit_model.pth              # <-- keep trained model (change name accordingly)
+
+# --- Dataset Files (keep only samples) ---
+/data/
+*.wav
+*.mp3
+
+# --- IDE & System files ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- Node / React Frontend ---
+node_modules/
+dist/
+build/
+
+# --- OS files ---
+Thumbs.db
+
+# --- Dependencies auto-generated ---
+*.egg-info/
