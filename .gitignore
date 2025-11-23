@@ -40,4 +40,7 @@ build/
 Thumbs.db
 
 # --- Dependencies auto-generated ---
-*.egg-info/
+*.egg-info/audio_app/vit_model.pth
+
+voice-antispoofing-vit/
+Untitled.ipynb
