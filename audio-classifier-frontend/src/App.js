@@ -58,13 +58,6 @@ function App() {
         {/* Upload Form */}
         <form onSubmit={handleSubmit}>
           <input type="file" accept=".wav,.mp3,audio/*" onChange={handleFileChange} />
-
-          {selectedFile && (
-            <audio controls style={{marginTop: "10px"}}>
-              <source src={URL.createObjectURL(selectedFile)} type={selectedFile.type} />
-              Your browser does not support audio playback.
-            </audio>
-          )}
           <button type="submit" disabled={isLoading}>
             {isLoading ? "Analyzing..." : "Classify Audio"}
           </button>
