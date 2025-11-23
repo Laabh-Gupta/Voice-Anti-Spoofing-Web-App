@@ -21,6 +21,22 @@ The backend loads a **fine-tuned PyTorch model**, takes an audio input from the 
 
 ---
 
+## 📦 Complete Project Repository
+
+This README belongs to the **Machine Learning Core Project**.
+To see the **full web application (frontend + backend deployment)**, check the separate repository below:
+
+🔗 **Full Web App Repository:**  
+https://github.com/Laabh-Gupta/Voice-Anti-Spoofing-Web-App
+
+This repo contains:
+- React-based frontend (Netlify hosted)
+- FastAPI backend (Railway hosted)
+- API integration with trained model
+- Production-ready deployment setup
+
+---
+
 ## 🏗️ Tech Stack  
 
 | Layer | Technology |
