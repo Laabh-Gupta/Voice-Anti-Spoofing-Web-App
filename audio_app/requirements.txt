@@ -1,6 +1,12 @@
 fastapi
 uvicorn
-torch
-torchaudio
-torchvision
 requests
+numpy
+
+# CPU-only PyTorch (small size)
+torch==2.3.0+cpu
+torchaudio==2.3.0+cpu
+torchvision==0.18.0+cpu
+
+# Required for CPU-only torch wheels
+-f https://download.pytorch.org/whl/torch_stable.html
