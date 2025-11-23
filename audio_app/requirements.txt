@@ -4,7 +4,7 @@ requests
 numpy
 python-multipart
 
-# ONLY TORCH should use this index:
-torch==1.13.1+cpu --index-url https://download.pytorch.org/whl/cpu
-torchvision==0.14.1+cpu --index-url https://download.pytorch.org/whl/cpu
-torchaudio==0.13.1+cpu --index-url https://download.pytorch.org/whl/cpu
+# Torch – IMPORTANT: version has *no +cpu*, but we force CPU install using index_url:
+torch==1.13.1 --index-url https://download.pytorch.org/whl/cpu
+torchaudio==0.13.1 --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.14.1 --index-url https://download.pytorch.org/whl/cpu
