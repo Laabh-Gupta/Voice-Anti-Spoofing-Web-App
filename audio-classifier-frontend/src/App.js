@@ -31,10 +31,13 @@ function App() {
 
     try {
       // Send the file to your FastAPI backend
-      const response = await fetch('http://127.0.0.1:8000/predict/', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        "https://voice-anti-spoofing-web-app-production.up.railway.app/predict/", 
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Something went wrong with the API call.');
