@@ -4,8 +4,8 @@ requests
 numpy
 python-multipart
 
-# FORCE CPU TORCH (compatible with Railway)
-torch==2.0.0
-torchaudio==2.0.0
-torchvision==0.15.1
--f https://download.pytorch.org/whl/cpu
+# Lite & 100% CPU Torch
+--index-url https://download.pytorch.org/whl/cpu
+torch==1.13.1+cpu
+torchvision==0.14.1+cpu
+torchaudio==0.13.1+cpu
