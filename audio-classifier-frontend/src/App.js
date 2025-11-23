@@ -53,7 +53,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>🎙️ Voice Anti-Spoofing System</h1>
-        <p>Upload a WAV or MP3 file to detect if it's REAL or AI-GENERATED.</p>
+        <p>Upload a WAV file to detect if it's REAL or AI-GENERATED.</p>
 
         {/* Upload Form */}
         <form onSubmit={handleSubmit}>
