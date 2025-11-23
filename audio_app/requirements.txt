@@ -4,8 +4,8 @@ requests
 numpy
 python-multipart
 
-# Install CPU-only PyTorch using the index URL
-torch==2.0.1
-torchaudio==2.0.1
-torchvision==0.15.2
+# FORCE CPU TORCH (compatible with Railway)
+torch==2.0.0
+torchaudio==2.0.0
+torchvision==0.15.1
 -f https://download.pytorch.org/whl/cpu
