@@ -1,47 +1,17 @@
-# In model.py
-
-import torch
 import torch.nn as nn
-import torchvision.models as models
-import torchvision.transforms as TV
 
-class ViTModel(nn.Module):
-    """
-    This class defines the Vision Transformer architecture, adapted for 
-    1-channel spectrogram inputs.
-    """
+class BaselineCNN(nn.Module):
     def __init__(self, num_classes=2):
         super().__init__()
-        
-        # Load the pre-trained Vision Transformer (ViT) architecture.
-        # We set weights=None because we will be loading our own fine-tuned weights.
-        self.vit = models.vit_b_16(weights=None)
-        
-        # --- Modifications for Spectrograms ---
-        
-        # 1. Modify the first convolutional layer (patch embedding) to accept
-        #    1-channel (grayscale) spectrograms instead of 3-channel RGB images.
-        #    Original layer: nn.Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
-        self.vit.conv_proj = nn.Conv2d(
-            in_channels=1, 
-            out_channels=768, 
-            kernel_size=(16, 16), 
-            stride=(16, 16)
+        self.conv_stack = nn.Sequential(
+            nn.Conv2d(1, 16, 3, 1, 1), nn.ReLU(), nn.MaxPool2d(2),
+            nn.Conv2d(16, 32, 3, 1, 1), nn.ReLU(), nn.MaxPool2d(2),
+            nn.Conv2d(32, 64, 3, 1, 1), nn.ReLU(), nn.MaxPool2d(2),
         )
-        
-        # 2. Add a resizing transform because the pre-trained ViT expects
-        #    a fixed input size of 224x224 pixels.
-        self.resizer = TV.Resize((224, 224), antialias=True)
-        
-        # 3. Replace the final classifier head to output the correct number
-        #    of classes for our problem (2: fake or real).
-        num_final_features = self.vit.heads.head.in_features
-        self.vit.heads.head = nn.Linear(num_final_features, num_classes)
-
+        self.flatten = nn.Flatten()
+        self.linear_stack = nn.Sequential(
+            nn.Linear(15360, 128), nn.ReLU(), nn.Dropout(0.5),
+            nn.Linear(128, num_classes)
+        )
     def forward(self, x):
-        """Defines the forward pass of the model."""
-        # The input 'x' is a spectrogram tensor.
-        # First, resize it to the 224x224 size that ViT expects.
-        x = self.resizer(x)
-        # Then, pass it through the ViT model.
-        return self.vit(x)
+        return self.linear_stack(self.flatten(self.conv_stack(x)))
