@@ -1,23 +1,21 @@
-// In src/App.js
-
+// src/App.js
 import React, { useState } from 'react';
-import './App.css'; // We'll use this for some basic styling
+import './App.css';
 
 function App() {
-  // State variables to manage the file, prediction, and loading status
   const [selectedFile, setSelectedFile] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // This function is called when the user selects a file
+  // Handle file selection
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    setPrediction(null); // Reset previous prediction
-    setError(null); // Reset previous error
+    setPrediction(null);
+    setError(null);
   };
 
-  // This function is called when the user clicks the "Classify Audio" button
+  // Submit audio to backend
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selectedFile) {
@@ -25,29 +23,29 @@ function App() {
       return;
     }
 
-    setIsLoading(true); // Show a loading message
+    setIsLoading(true);
     const formData = new FormData();
-    formData.append('file', selectedFile);
+    formData.append("file", selectedFile);
 
     try {
-      // Send the file to your FastAPI backend
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/predict/`,
         {
-          method: 'POST',
+          method: "POST",
           body: formData,
-      });
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Something went wrong with the API call.');
+        throw new Error("API Error: Unable to fetch prediction.");
       }
 
       const data = await response.json();
-      setPrediction(data); // Store the prediction result
+      setPrediction(data);
     } catch (err) {
       setError(err.message);
     } finally {
-      setIsLoading(false); // Hide the loading message
+      setIsLoading(false);
     }
   };
 
@@ -55,26 +53,42 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>🎙️ Voice Anti-Spoofing System</h1>
-        <p>Upload an audio file (.wav or .mp3) to see if it's real or AI-generated.</p>
-        
+        <p>Upload a WAV or MP3 file to detect if it's REAL or AI-GENERATED.</p>
+
+        {/* Upload Form */}
         <form onSubmit={handleSubmit}>
-          <input type="file" onChange={handleFileChange} accept=".wav,.mp3" />
+          <input type="file" accept=".wav,.mp3" onChange={handleFileChange} />
           <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Analyzing...' : 'Classify Audio'}
+            {isLoading ? "Analyzing..." : "Classify Audio"}
           </button>
         </form>
 
-        {/* Conditionally display the loading message, error, or prediction */}
-        {isLoading && <p>Loading...</p>}
-        {error && <p className="error">Error: {error}</p>}
-        {prediction && (
+        {/* Loading */}
+        {isLoading && <p className="loading">Processing audio...</p>}
+
+        {/* Error */}
+        {error && <p className="error">❌ Error: {error}</p>}
+
+        {/* API Error */}
+        {prediction && prediction.error && (
+          <p className="error">❌ Error: {prediction.error}</p>
+        )}
+
+        {/* SUCCESS RESULT */}
+        {prediction && prediction.predicted_class && (
           <div className="result">
-            <h2>Prediction Result:</h2>
-            <p><strong>Filename:</strong> {prediction.filename}</p>
-            <p className={`prediction-${prediction.predicted_class}`}>
-              <strong>Predicted Class:</strong> {prediction.predicted_class.toUpperCase()}
+            <h2>Prediction Result</h2>
+            <p>
+              <strong>Filename:</strong> {prediction.filename}
             </p>
-            <p><strong>Confidence:</strong> {(prediction.confidence * 100).toFixed(2)}%</p>
+            <p>
+              <strong>Predicted Class:</strong>{" "}
+              {prediction.predicted_class.toUpperCase()}
+            </p>
+            <p>
+              <strong>Confidence:</strong>{" "}
+              {(prediction.confidence * 100).toFixed(2)}%
+            </p>
           </div>
         )}
       </header>
