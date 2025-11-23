@@ -27,7 +27,7 @@ This README belongs to the **Machine Learning Core Project**.
 To see the **full web application (frontend + backend deployment)**, check the separate repository below:
 
 🔗 **Full Web App Repository:**  
-https://github.com/Laabh-Gupta/Voice-Anti-Spoofing-Web-App
+https://github.com/Laabh-Gupta/Voice_Anti_Spoofing_System
 
 This repo contains:
 - React-based frontend (Netlify hosted)
