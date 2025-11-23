@@ -4,10 +4,8 @@ requests
 numpy
 python-multipart
 
-# PyTorch CPU-only version (compatible with Python 3.10)
-torch==2.2.0
-torchaudio==2.2.0
-torchvision==0.17.0
+torch==2.0.1+cpu
+torchaudio==2.0.1+cpu
+torchvision==0.15.2+cpu
 
-# Get CPU wheels specifically
--f https://download.pytorch.org/whl/torch_stable.html
+-f https://download.pytorch.org/whl/cpu
