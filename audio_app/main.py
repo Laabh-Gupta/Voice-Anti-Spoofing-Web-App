@@ -1,6 +1,10 @@
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
+import os
+print("Current Directory:", os.getcwd())
+print("Files:", os.listdir())
+
 import torch
 import torchaudio
 import torchaudio.transforms as T
