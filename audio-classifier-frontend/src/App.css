@@ -1,7 +1,8 @@
-/* In src/App.css */
+/* Global Page Styling */
 .App {
   text-align: center;
 }
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -12,35 +13,56 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+/* Input & Button */
 input[type="file"] {
   margin: 20px;
 }
+
 button {
   padding: 10px 20px;
   font-size: 1em;
   cursor: pointer;
   border-radius: 5px;
   border: none;
+  background-color: #61dafb;
+  color: black;
+  transition: 0.2s ease-in-out;
 }
+
+button:hover:not(:disabled) {
+  background-color: #4fb4d9;
+}
+
 button:disabled {
   cursor: not-allowed;
   background-color: #cccccc;
 }
+
+/* Prediction Result Container */
 .result {
   margin-top: 30px;
   padding: 20px;
-  border: 1px solid #61dafb;
-  border-radius: 10px;
   width: 50%;
+  border-radius: 10px;
+  color: white;
+  transition: 0.4s ease-in-out;
 }
+
+/* 🔥 NEW — Background Color Based on Result */
+.result-real {
+  background-color: #2ecc71;  /* Green */
+  border: 2px solid #1e8449;
+}
+
+.result-fake {
+  background-color: #e74c3c;  /* Red */
+  border: 2px solid #922b21;
+}
+
+/* Error Styling */
 .error {
   color: #ff6b6b;
-}
-.prediction-real {
-  color: #4caf50; /* Green for real */
-  font-weight: bold;
-}
-.prediction-fake {
-  color: #f44336; /* Red for fake */
+  font-size: 1.2em;
   font-weight: bold;
 }
