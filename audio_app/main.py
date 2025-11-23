@@ -51,13 +51,22 @@ if not os.path.exists(MODEL_PATH):
                 f.write(chunk)
     print("Model downloaded!")
 
-print("--- Loading model into memory ---")
-model = ViTModel()
-state_dict = torch.load(MODEL_PATH, map_location=device)
-model.load_state_dict(state_dict)
-model.to(device)
-model.eval()
-print("--- Model loaded successfully ---")
+# Global variable, but not loaded yet
+model = None
+
+def load_model():
+    global model
+    if model is None:
+        print("Loading model into memory...")
+        state_dict = torch.load(MODEL_PATH, map_location=device)
+        model_instance = ViTModel()
+        model_instance.load_state_dict(state_dict)
+        model_instance.to(device)
+        model_instance.eval()
+        model = model_instance
+        print("Model loaded successfully.")
+    return model
+
 
 # ==================================================================
 # 3. Define Constants & Preprocessing Function
@@ -104,13 +113,12 @@ def read_root():
 async def predict(file: UploadFile = File(...)):
     audio_bytes = await file.read()
 
-    try:
-        spectrogram = preprocess_audio(audio_bytes)
-    except Exception as e:
-        return {"error": f"Failed to process audio: {str(e)}"}
+    spectrogram = preprocess_audio(audio_bytes)
+
+    model_instance = load_model()   # <-- model loads only when needed
 
     with torch.no_grad():
-        logits = model(spectrogram.to(device))
+        logits = model_instance(spectrogram.to(device))
         probs = torch.softmax(logits, dim=1)
         idx = torch.argmax(probs, dim=1).item()
 
@@ -119,3 +127,4 @@ async def predict(file: UploadFile = File(...)):
         "predicted_class": CLASS_NAMES[idx],
         "confidence": float(probs[0][idx]),
     }
+
