@@ -32,7 +32,7 @@ function App() {
     try {
       // Send the file to your FastAPI backend
       const response = await fetch(
-        "https://voice-anti-spoofing-web-app-production.up.railway.app/predict/", 
+        `${process.env.REACT_APP_BACKEND_URL}/predict/`, 
         {
           method: "POST",
           body: formData,
