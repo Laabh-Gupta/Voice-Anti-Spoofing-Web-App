@@ -17,7 +17,6 @@ The backend loads a **fine-tuned PyTorch model**, takes an audio input from the 
 - Comparative model training (CNN, deeper CNN, ViT)  
 - Fine-tuning to improve generalization  
 - Deploying final optimized model for inference  
-fileciteturn0file0
 
 ---
 
@@ -31,7 +30,8 @@ https://github.com/Laabh-Gupta/Voice_Anti_Spoofing_System
 
 This repo contains:
 - React-based frontend (Netlify hosted)
-- FastAPI backend (Railway hosted)
+- FastAPI backend (Render hosted)
+- Model weights hosted on Hugging Face Hub
 - API integration with trained model
 - Production-ready deployment setup
 
@@ -44,24 +44,30 @@ This repo contains:
 | **ML / Deep Learning** | PyTorch, Torchaudio, Torchvision |
 | **Backend API** | FastAPI + Uvicorn |
 | **Frontend** | React.js |
-| **Deployment** | **Railway (Backend)** + **Netlify (Frontend)** |
+| **Model Hosting** | Hugging Face Hub |
+| **Deployment** | **Render (Backend)** + **Netlify (Frontend)** |
 | **Others** | Python Multipart, SoundFile |
 
 ---
 
 ## 🌐 Deployment Details
 
-### 🔹 Backend (FastAPI) – Railway  
+### 🔹 Model – Hugging Face Hub
+1. Trained model weights + architecture code (`model.py`) pushed to [Hugging Face Hub](https://huggingface.co/LaabhGupta/voice-antispoofing)  
+2. Backend downloads weights at startup via `huggingface_hub.hf_hub_download()`  
+3. Keeps large model files out of the Git repo and deployment builds
+
+### 🔹 Backend (FastAPI) – Render  
 1. Set up a FastAPI project  
-2. Added `requirements.txt`  
-3. Connected GitHub repo to **Railway**  
-4. Deployed — Railway automatically builds & hosts the API  
+2. Added `requirements.txt` (CPU-only PyTorch builds to keep deploys lean)  
+3. Connected GitHub repo to **Render**  
+4. Deployed — Render automatically builds & hosts the API  
 5. Retrieved **public backend URL** (used in frontend)
 
 ### 🔹 Frontend (React.js) – Netlify  
-1. Added API URL from Railway in React `.env` file  
+1. Added backend API URL as an environment variable in Netlify (`REACT_APP_BACKEND_URL`)  
 2. Ran `npm run build`  
-3. Deployed directly via Netlify drag & drop / GitHub deploy  
+3. Deployed directly via Netlify GitHub integration  
 4. Web App goes live instantly 🚀
 
 ---
@@ -79,7 +85,6 @@ From the original ML project:
   2. Deeper CNN  
   3. Vision Transformer (ViT)  
 - **Fine-tuning improved performance** significantly  
-fileciteturn0file0
 
 | Model | Final Test Accuracy |
 |-------|---------------------|
@@ -105,7 +110,7 @@ VOICE-ANTI-SPOOFING/
 
 ### Python Backend
 ```bash
-pip install "fastapi[all]" uvicorn torch torchaudio torchvision python-multipart soundfile
+pip install "fastapi[all]" uvicorn torch torchaudio torchvision python-multipart soundfile huggingface_hub
 ```
 
 ### React Frontend
