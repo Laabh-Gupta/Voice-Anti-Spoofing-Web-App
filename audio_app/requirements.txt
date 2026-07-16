@@ -3,10 +3,7 @@ uvicorn
 requests
 numpy
 python-multipart
-
-# Torch – IMPORTANT: version has *no +cpu*, but we force CPU install using index_url:
-torch==1.13.1 --index-url https://download.pytorch.org/whl/cpu
-torchaudio==0.13.1 --index-url https://download.pytorch.org/whl/cpu
-torchvision==0.14.1 --index-url https://download.pytorch.org/whl/cpu
 huggingface_hub
-python-multipart
+torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+torchaudio==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cpu
