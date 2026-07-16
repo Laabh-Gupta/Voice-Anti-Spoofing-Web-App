@@ -7,6 +7,7 @@ import torchaudio.transforms as T
 import torch.nn.functional as F
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from huggingface_hub import hf_hub_download
 from model import BaselineCNN
 import io
 
@@ -24,13 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 2. Load Model ---
-MODEL_PATH = "baseline_cnn_finetuned.pth"
+# --- 2. Load Model from Hugging Face Hub ---
+HF_REPO_ID = "LaabhGupta/voice-antispoofing"
+MODEL_FILENAME = "baseline_cnn_finetuned.pth"
 device = "cpu"
-print("🔍 Checking for model file...")
 
-if not os.path.exists(MODEL_PATH):
-    raise RuntimeError(f"❌ Model not found: {MODEL_PATH}")
+print("🔍 Downloading model from Hugging Face Hub...")
+MODEL_PATH = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME)
 
 print("🧠 Loading model...")
 model = BaselineCNN()
