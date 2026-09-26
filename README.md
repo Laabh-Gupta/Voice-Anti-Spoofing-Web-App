@@ -1,125 +1,115 @@
-# 🎙 Voice Anti-Spoofing Web App  
-### Detect AI-Generated / Fake Voices in Real-Time  
-🌐 **Live Web App:** https://voiceantispoofing.netlify.app/
+# Voice Anti-Spoofing Web App
 
----
+**From an audio classifier to a deployed prediction interface.**
 
-## 🚀 Project Overview  
+[Live frontend](https://voiceantispoofing.netlify.app/) · [Training project](https://github.com/Laabh-Gupta/Voice_Anti_Spoofing_System) · [Model artifacts](https://huggingface.co/LaabhGupta/voice-antispoofing)
 
-This is a **full-stack AI-powered web application** that identifies whether a voice is **real or AI-generated (spoofed)**.  
+A React and FastAPI application for classifying uploaded speech as **fake** or **real**. This repository contains the web interface and serving code. The linked research repository contains the CNN/ViT experiments.
 
-It is built using a **deep learning model trained on spectrograms** of real and fake audio, and deployed as a fully functional web application.
+## What I built
 
-### 🧠 Core Idea  
-The backend loads a **fine-tuned PyTorch model**, takes an audio input from the user, preprocesses it into a spectrogram, and predicts whether the voice is **REAL or FAKE** — in real-time.
+The application connects browser uploads to a PyTorch inference pipeline, loads a trained checkpoint from Hugging Face Hub, and returns a predicted class and softmax score. The frontend is hosted on Netlify; the repository includes a Render backend configuration.
 
-🧪 The ML workflow included:
-- Comparative model training (CNN, deeper CNN, ViT)  
-- Fine-tuning to improve generalization  
-- Deploying final optimized model for inference  
+## How inference works
 
----
-
-## 📦 Complete Project Repository
-
-This README belongs to the **Machine Learning Core Project**.
-To see the **full web application (frontend + backend deployment)**, check the separate repository below:
-
-🔗 **Full Web App Repository:**  
-https://github.com/Laabh-Gupta/Voice_Anti_Spoofing_System
-
-This repo contains:
-- React-based frontend (Netlify hosted)
-- FastAPI backend (Render hosted)
-- Model weights hosted on Hugging Face Hub
-- API integration with trained model
-- Production-ready deployment setup
-
----
-
-## 🏗️ Tech Stack  
-
-| Layer | Technology |
-|------|-------------|
-| **ML / Deep Learning** | PyTorch, Torchaudio, Torchvision |
-| **Backend API** | FastAPI + Uvicorn |
-| **Frontend** | React.js |
-| **Model Hosting** | Hugging Face Hub |
-| **Deployment** | **Render (Backend)** + **Netlify (Frontend)** |
-| **Others** | Python Multipart, SoundFile |
-
----
-
-## 🌐 Deployment Details
-
-### 🔹 Model – Hugging Face Hub
-1. Trained model weights + architecture code (`model.py`) pushed to [Hugging Face Hub](https://huggingface.co/LaabhGupta/voice-antispoofing)  
-2. Backend downloads weights at startup via `huggingface_hub.hf_hub_download()`  
-3. Keeps large model files out of the Git repo and deployment builds
-
-### 🔹 Backend (FastAPI) – Render  
-1. Set up a FastAPI project  
-2. Added `requirements.txt` (CPU-only PyTorch builds to keep deploys lean)  
-3. Connected GitHub repo to **Render**  
-4. Deployed — Render automatically builds & hosts the API  
-5. Retrieved **public backend URL** (used in frontend)
-
-### 🔹 Frontend (React.js) – Netlify  
-1. Added backend API URL as an environment variable in Netlify (`REACT_APP_BACKEND_URL`)  
-2. Ran `npm run build`  
-3. Deployed directly via Netlify GitHub integration  
-4. Web App goes live instantly 🚀
-
----
-
-## 🖥️ Live Demo  
-🔗 https://voiceantispoofing.netlify.app/  
-Upload any voice → Get **FAKE / REAL** prediction in seconds.
-
----
-
-## 🧠 Model Training Summary  
-From the original ML project:  
-- **Three models were trained & compared**:
-  1. Baseline CNN  
-  2. Deeper CNN  
-  3. Vision Transformer (ViT)  
-- **Fine-tuning improved performance** significantly  
-
-| Model | Final Test Accuracy |
-|-------|---------------------|
-| Baseline CNN (Fine-tuned) | **99.51%** |
-| Deeper CNN (Fine-tuned) | **99.63%** |
-| Vision Transformer (Fine-tuned) | **99.75%** |
-
----
-
-## 📁 Project Structure
-
-```
-VOICE-ANTI-SPOOFING/
-│── backend/        # FastAPI + Model
-│── frontend/       # React App
-│── requirements.txt
-│── README.md
+```mermaid
+flowchart TD
+    A[Upload WAV or MP3 in React] --> B[FastAPI multipart endpoint]
+    B --> C[Resample to 16 kHz and convert to mono]
+    C --> D[Crop or pad to four seconds]
+    D --> E[128-bin Mel spectrogram]
+    E --> F[Fine-tuned baseline CNN / PyTorch CPU]
+    F --> G[Predicted class and softmax score]
+    G --> A
 ```
 
----
+[Preprocessing and endpoint](audio_app/main.py) use `n_fft=1024` and `hop_length=512`. The [baseline model](audio_app/model.py) has three convolution/ReLU/max-pooling blocks, followed by a dense classifier and dropout. The server explicitly loads **`baseline_cnn_finetuned.pth`**.
 
-## ⚙️ Requirements
+## Research results & provenance
 
-### Python Backend
+| Model in the original project | Reported test accuracy |
+| --- | ---: |
+| Fine-tuned baseline CNN | **99.51%** |
+| Fine-tuned deeper CNN | **99.63%** |
+| Fine-tuned Vision Transformer | **99.75%** |
+
+These are the original project's results, retained as confirmed by the author. The public training repository is a smaller variant and its saved notebook outputs are from a different run. These figures are not a fresh reproduction or measured accuracy of this hosted app. **The web backend serves the baseline CNN, not the ViT.**
+
+Training explores Mel spectrograms, CNNs/ViT and time/frequency masking using the Fake or Real speech dataset. See [training methodology and evaluation limits](https://github.com/Laabh-Gupta/Voice_Anti_Spoofing_System#evaluation).
+
+## Stack & deployment
+
+- **Inference:** Python, PyTorch, Torchaudio and Hugging Face Hub.
+- **API:** FastAPI, Uvicorn and multipart file uploads.
+- **UI:** React 18 and Create React App.
+- **Hosting:** Netlify frontend; [Render backend configuration](render.yaml). Model weights download at API startup.
+
+A reachable frontend does not guarantee backend availability: hosting cold starts and model downloads can delay the first prediction.
+
+## Run locally
+
+Use **Python 3.10** and a Node.js/npm installation compatible with React Scripts 5.
+
 ```bash
-pip install "fastapi[all]" uvicorn torch torchaudio torchvision python-multipart soundfile huggingface_hub
+git clone https://github.com/Laabh-Gupta/Voice-Anti-Spoofing-Web-App.git
+cd Voice-Anti-Spoofing-Web-App
+python -m venv .venv
 ```
 
-### React Frontend
+Activate `.venv` using `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/activate` on macOS/Linux.
+
+The checked-in requirements mix package pins with per-line index options. This explicit equivalent separates the CPU PyTorch index:
+
 ```bash
+python -m pip install "numpy<2" fastapi uvicorn requests python-multipart huggingface_hub soundfile
+python -m pip install torch==2.2.0 torchaudio==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cpu
+cd audio_app
+python -m uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+The first startup needs network access to download the public checkpoint. Codec support depends on the Torchaudio installation; WAV is the simplest initial input.
+
+In a second terminal:
+
+```bash
+cd Voice-Anti-Spoofing-Web-App/audio-classifier-frontend
 npm install
-npm start
 ```
 
----
+Create `audio-classifier-frontend/.env.local`:
 
-## 📝 License  
-Licensed under the **MIT License**.
+```dotenv
+REACT_APP_BACKEND_URL=http://127.0.0.1:8000
+```
+
+Then run `npm start` and open `http://localhost:3000`. Restart the frontend after changing its environment. Use `npm run build` for a static frontend build.
+
+### API
+
+- `GET /`: basic service status.
+- `POST /predict/`: multipart field named `file`; WAV or MP3.
+
+```bash
+curl -F "file=@sample.wav" http://127.0.0.1:8000/predict/
+```
+
+Successful responses contain `filename`, `predicted_class` and `confidence`. That score is a softmax output, not calibrated certainty that an audio clip is authentic.
+
+## Project structure
+
+```text
+audio_app/                  FastAPI entry point, CNN definition and dependencies
+audio-classifier-frontend/ React upload and result interface
+render.yaml                 Backend hosting configuration
+LICENSE                     MIT license
+```
+
+## Limitations
+
+- Dataset-specific accuracy does not establish performance against unseen generators, codecs, languages or recording conditions.
+- Only the first four seconds are analyzed when an upload is longer.
+- Current serving code has broad CORS, no user authentication/rate limiting and no explicit upload-size cap. Review those controls before wider exposure.
+- Dependencies and model downloads affect reproducibility. No latency, load-test or fresh benchmark result is claimed here.
+- Inspectability comes from the linked preprocessing, model and endpoint code; the application does not establish forensic proof of authenticity.
+
+[MIT license](LICENSE).
